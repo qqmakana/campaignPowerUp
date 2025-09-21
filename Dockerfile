@@ -1,22 +1,42 @@
-# Use nginx to serve the built app
-FROM nginx:alpine
+# Multi-stage build for Railway deployment
+FROM node:18-alpine AS builder
 
-# Copy built files to nginx
-COPY dist/ /usr/share/nginx/html/
+# Set working directory
+WORKDIR /app
 
-# Copy nginx configuration for proper video handling
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy package files
+COPY package*.json ./
 
-# Remove default nginx config that conflicts with our setup
-RUN rm -f /etc/nginx/conf.d/default.conf
+# Install dependencies
+RUN npm ci --only=production
 
-# Note: Video files are excluded from deployment
+# Copy source code
+COPY . .
 
-# Expose port 80
-EXPOSE 80
+# Build the React app
+RUN npm run build
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Production stage
+FROM node:18-alpine AS production
 
+# Set working directory
+WORKDIR /app
 
+# Copy package files
+COPY package*.json ./
 
+# Install production dependencies
+RUN npm ci --only=production
+
+# Copy built app from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Copy server files
+COPY server.js ./
+COPY backend/ ./backend/
+
+# Expose port
+EXPOSE 3000
+
+# Start the server
+CMD ["npm", "start"]

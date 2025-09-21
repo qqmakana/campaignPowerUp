@@ -1,9 +1,16 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Debug logging
+console.log('🔍 Debug Info:');
+console.log('Current directory:', __dirname);
+console.log('Dist directory exists:', fs.existsSync(path.join(__dirname, 'dist')));
+console.log('Dist contents:', fs.existsSync(path.join(__dirname, 'dist')) ? fs.readdirSync(path.join(__dirname, 'dist')) : 'NOT FOUND');
 
 // Enable CORS
 app.use(cors());
