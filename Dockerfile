@@ -15,8 +15,8 @@ RUN rm -f /etc/nginx/conf.d/default.conf
 # Expose port 80
 EXPOSE 80
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start nginx with environment variable substitution
+CMD ["sh", "-c", "envsubst '${PORT}' < /etc/nginx/nginx.conf > /tmp/nginx.conf && nginx -g 'daemon off;' -c /tmp/nginx.conf"]
 
 
 
