@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Download, Trophy, Calendar, Shield, Store } from "lucide-react";
 
 // ---- Assets (placeholder paths - you can replace with actual assets) ----
-const VIDEO_MP4 = "/assets/V8.mp4";
+const VIDEO_MP4 = "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4";
 const LOGO_RAW  = "/assets/PowerUpWin-Logo.png";         // PNG logo
 const AGREEMENT_DOC = "/assets/agreement-template.html";
 
