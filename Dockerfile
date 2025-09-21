@@ -1,9 +1,6 @@
 # Use nginx to serve the built app
 FROM nginx:alpine
 
-# Install gettext for envsubst
-RUN apk add --no-cache gettext
-
 # Copy built files to nginx
 COPY dist/ /usr/share/nginx/html/
 
@@ -18,8 +15,8 @@ RUN rm -f /etc/nginx/conf.d/default.conf
 # Expose port 80
 EXPOSE 80
 
-# Start nginx with environment variable substitution
-CMD ["sh", "-c", "envsubst '${PORT}' < /etc/nginx/nginx.conf > /tmp/nginx.conf && nginx -g 'daemon off;' -c /tmp/nginx.conf"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
 
 
 
