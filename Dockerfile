@@ -1,6 +1,9 @@
 # Use nginx to serve the built app
 FROM nginx:alpine
 
+# Install gettext for envsubst
+RUN apk add --no-cache gettext
+
 # Copy built files to nginx
 COPY dist/ /usr/share/nginx/html/
 
