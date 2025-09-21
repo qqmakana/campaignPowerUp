@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Download, Trophy, Calendar, Shield, Store } from "lucide-react";
 
 // ---- Assets (placeholder paths - you can replace with actual assets) ----
+// Force rebuild to fix white screen issue
 const VIDEO_MP4 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 const LOGO_RAW  = "/assets/PowerUpWin-Logo.png";         // PNG logo
 const AGREEMENT_DOC = "/assets/agreement-template.html";
