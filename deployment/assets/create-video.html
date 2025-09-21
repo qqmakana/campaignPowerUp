@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Video</title>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let frame = 0;
+        
+        function drawFrame() {
+            // Clear canvas
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Create animated background
+            const time = frame * 0.02;
+            
+            // Animated gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, `hsl(${(time * 10) % 360}, 70%, 20%)`);
+            gradient.addColorStop(0.5, `hsl(${(time * 15 + 120) % 360}, 60%, 15%)`);
+            gradient.addColorStop(1, `hsl(${(time * 20 + 240) % 360}, 80%, 10%)`);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Animated circles
+            for (let i = 0; i < 5; i++) {
+                const x = canvas.width / 2 + Math.cos(time + i) * (100 + i * 50);
+                const y = canvas.height / 2 + Math.sin(time + i) * (80 + i * 40);
+                const radius = 20 + Math.sin(time * 2 + i) * 10;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220, 38, 38, ${0.3 + Math.sin(time + i) * 0.2})`;
+                ctx.fill();
+            }
+            
+            // PowerUp & Win text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('POWER UP & WIN', canvas.width / 2, canvas.height / 2);
+            
+            ctx.font = '24px Arial';
+            ctx.fillText('UMS Northern Division', canvas.width / 2, canvas.height / 2 + 40);
+            
+            frame++;
+            requestAnimationFrame(drawFrame);
+        }
+        
+        drawFrame();
+    </script>
+</body>
+</html>

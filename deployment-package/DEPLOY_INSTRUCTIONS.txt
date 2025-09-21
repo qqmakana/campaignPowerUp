@@ -1,0 +1,26 @@
+PowerUp & Win - Deployment Instructions
+======================================
+
+FRONTEND DEPLOYMENT:
+1. Upload all files in this folder to your web hosting
+2. Make sure index.html is in the root directory
+3. Test: Visit your domain
+
+BACKEND DEPLOYMENT:
+1. Upload backend-deployment/ folder to your server
+2. Run: npm install && npm start
+3. Test: Visit your-domain.com/api/health
+
+ADMIN ACCESS:
+- URL: your-domain.com/admin-secure.html
+- Username: admin
+- Password: powerup2024 (CHANGE THIS!)
+
+SECURITY:
+- Change the default password in admin-secure.html
+- Use HTTPS for production
+- Backup your data regularly
+
+SUPPORT:
+- Check DEPLOYMENT_STEPS.md for detailed instructions
+- Test all functionality before going live

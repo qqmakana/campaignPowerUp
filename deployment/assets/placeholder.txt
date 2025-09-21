@@ -1,0 +1,9 @@
+# Assets Directory
+
+This directory should contain the following files:
+- V8.mp4 (video file)
+- PowerUp&Win Logo.png (logo image)
+- PowerUp%26Win%20Logo.png (URL-encoded logo image)
+- POWER_UP_2025_Condensed_Agreement-Master.docx (agreement document)
+
+Replace this file with your actual assets.

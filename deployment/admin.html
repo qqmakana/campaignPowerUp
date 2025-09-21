@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerUp & Win - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="container mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">PowerUp & Win</h1>
+            <h2 class="text-2xl text-red-400">Admin Dashboard</h2>
+            <p class="text-gray-300 mt-2">View all agreement submissions</p>
+        </div>
+
+        <div class="bg-white/10 rounded-2xl p-6 backdrop-blur-xl border border-white/20">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold">Form Submissions</h3>
+                <button onclick="exportData()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition">
+                    Export Data
+                </button>
+            </div>
+
+            <div id="submissions-container">
+                <div class="text-center text-gray-400 py-8">
+                    Loading submissions...
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="/" class="text-red-400 hover:text-red-300 underline">
+                ← Back to Main Site
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function loadSubmissions() {
+            const submissions = JSON.parse(localStorage.getItem('powerupWinSubmissions') || '[]');
+            const container = document.getElementById('submissions-container');
+            
+            if (submissions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-400 py-8">
+                        <p class="text-lg">No submissions yet</p>
+                        <p class="text-sm mt-2">Form submissions will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = submissions.map((submission, index) => `
+                <div class="bg-white/5 rounded-xl p-6 mb-4 border border-white/10">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-lg font-semibold">Submission #${index + 1}</h4>
+                        <div class="text-sm text-gray-400">
+                            ID: ${submission.id}<br>
+                            ${new Date(submission.submittedAt).toLocaleString()}
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h5 class="font-medium text-red-400 mb-2">Store Information</h5>
+                            <p><strong>Store Name:</strong> ${submission.storeName}</p>
+                            <p><strong>Representative:</strong> ${submission.representativeName}</p>
+                            <p><strong>Store Type:</strong> ${submission.storeType}</p>
+                        </div>
+                        
+                        <div>
+                            <h5 class="font-medium text-red-400 mb-2">Contact Information</h5>
+                            <p><strong>Email:</strong> ${submission.email}</p>
+                            <p><strong>Phone:</strong> ${submission.phone}</p>
+                            <p><strong>Address:</strong> ${submission.address}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-white/20">
+                        <h5 class="font-medium text-red-400 mb-2">Agreements</h5>
+                        <p>✓ Agreed to promotion terms: ${submission.agreeToTerms ? 'Yes' : 'No'}</p>
+                        <p>✓ Agreed to branding requirements: ${submission.agreeToBranding ? 'Yes' : 'No'}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function exportData() {
+            const submissions = JSON.parse(localStorage.getItem('powerupWinSubmissions') || '[]');
+            
+            if (submissions.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const dataStr = JSON.stringify(submissions, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `powerup-win-submissions-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Load submissions when page loads
+        loadSubmissions();
+
+        // Refresh every 30 seconds
+        setInterval(loadSubmissions, 30000);
+    </script>
+</body>
+</html>

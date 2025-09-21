@@ -1,0 +1,41 @@
+[
+  {
+    "storeName": "first test",
+    "representativeName": "briz",
+    "email": "brizo@gmail.com",
+    "phone": "+27636213590",
+    "address": "lets see",
+    "storeType": "both",
+    "agreeToTerms": true,
+    "agreeToBranding": true,
+    "submittedAt": "2025-09-20T19:20:26.074Z",
+    "id": "1758396026074",
+    "ip": "::1"
+  },
+  {
+    "storeName": "qman",
+    "representativeName": "lets see",
+    "email": "qaqambile@kmpmediagroup",
+    "phone": "+27636213590",
+    "address": "second test",
+    "storeType": "retail",
+    "agreeToTerms": true,
+    "agreeToBranding": true,
+    "submittedAt": "2025-09-20T19:21:52.870Z",
+    "id": "1758396112870",
+    "ip": "::1"
+  },
+  {
+    "storeName": "las one ",
+    "representativeName": "QMAN",
+    "email": "qaqambile@kmpmediagroup",
+    "phone": "+27636213590",
+    "address": "same address three",
+    "storeType": "wholesale",
+    "agreeToTerms": true,
+    "agreeToBranding": true,
+    "submittedAt": "2025-09-20T19:28:53.459Z",
+    "id": "1758396533459",
+    "ip": "::1"
+  }
+]

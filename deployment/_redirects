@@ -1,0 +1,10 @@
+# Netlify redirects for SPA
+/*    /index.html   200
+
+# Admin dashboard
+/admin.html    /admin.html   200
+
+
+
+
+

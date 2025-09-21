@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PowerUp & Win Video</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        let frame = 0;
+        
+        function animate() {
+            // Clear canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const time = frame * 0.02;
+            
+            // Create animated gradient background
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, `hsl(${(time * 10) % 360}, 70%, 20%)`);
+            gradient.addColorStop(0.5, `hsl(${(time * 15 + 120) % 360}, 60%, 15%)`);
+            gradient.addColorStop(1, `hsl(${(time * 20 + 240) % 360}, 80%, 10%)`);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Animated circles
+            for (let i = 0; i < 5; i++) {
+                const x = canvas.width / 2 + Math.cos(time + i) * (100 + i * 50);
+                const y = canvas.height / 2 + Math.sin(time + i) * (80 + i * 40);
+                const radius = 20 + Math.sin(time * 2 + i) * 10;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220, 38, 38, ${0.3 + Math.sin(time + i) * 0.2})`;
+                ctx.fill();
+            }
+            
+            // POWER UP & WIN text with animation
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(220, 38, 38, 0.8)';
+            ctx.shadowBlur = 20;
+            ctx.fillText('POWER UP & WIN', canvas.width / 2, canvas.height / 2);
+            
+            ctx.font = '24px Arial';
+            ctx.shadowBlur = 10;
+            ctx.fillText('UMS Northern Division', canvas.width / 2, canvas.height / 2 + 50);
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            
+            frame++;
+            requestAnimationFrame(animate);
+        }
+        
+        // Start the animation
+        animate();
+    </script>
+</body>
+</html>
