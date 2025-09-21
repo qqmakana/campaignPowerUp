@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Your V8.mp4 Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .video-test {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        video {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success { background: #2d5a2d; }
+        .error { background: #5a2d2d; }
+        .info { background: #2d4a5a; }
+        .log {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            text-align: left;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-test">
+        <h1>🎬 Testing Your V8.mp4 Video</h1>
+        <p>This page tests your actual video file</p>
+        
+        <div id="status" class="status info">Loading video...</div>
+        
+        <video id="test-video" controls autoplay muted loop>
+            <source src="/assets/V8.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="log" id="log">
+            <div>🎬 Video Test Log:</div>
+        </div>
+        
+        <div>
+            <button onclick="testVideo()">Test Video Again</button>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('test-video');
+        const status = document.getElementById('status');
+        const log = document.getElementById('log');
+        
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #888">[${timestamp}]</span> ${message}`;
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function clearLog() {
+            log.innerHTML = '<div>🎬 Video Test Log:</div>';
+        }
+        
+        function updateStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        function testVideo() {
+            addLog('🔄 Testing your V8.mp4 video...');
+            updateStatus('Testing video...', 'info');
+            
+            // Reset video
+            video.load();
+            
+            // Test if video file exists
+            fetch('/assets/V8.mp4', { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        addLog('✅ Video file found and accessible');
+                        updateStatus('✅ Your V8.mp4 video is working!', 'success');
+                    } else {
+                        addLog(`❌ Video file not accessible (${response.status})`);
+                        updateStatus('❌ Video file not found', 'error');
+                    }
+                })
+                .catch(error => {
+                    addLog(`❌ Error accessing video: ${error.message}`);
+                    updateStatus('❌ Video file not accessible', 'error');
+                });
+        }
+        
+        // Video event listeners
+        video.addEventListener('loadstart', () => {
+            addLog('📹 Video loading started');
+        });
+        
+        video.addEventListener('canplay', () => {
+            addLog('✅ Video can play - your V8.mp4 is working!');
+            updateStatus('✅ Your V8.mp4 video is playing!', 'success');
+        });
+        
+        video.addEventListener('error', (e) => {
+            const error = e.target.error;
+            let errorMessage = 'Unknown error';
+            
+            if (error) {
+                switch (error.code) {
+                    case 1: errorMessage = 'Video loading aborted'; break;
+                    case 2: errorMessage = 'Network error'; break;
+                    case 3: errorMessage = 'Video decoding error'; break;
+                    case 4: errorMessage = 'Video format not supported'; break;
+                }
+            }
+            
+            addLog(`❌ Video error: ${errorMessage}`);
+            updateStatus('❌ Video failed to load', 'error');
+        });
+        
+        video.addEventListener('loadeddata', () => {
+            addLog('📊 Video data loaded successfully');
+        });
+        
+        video.addEventListener('playing', () => {
+            addLog('▶️ Video is now playing');
+        });
+        
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            addLog('🚀 Video test page loaded');
+            testVideo();
+        });
+    </script>
+</body>
+</html>

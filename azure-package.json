@@ -1,0 +1,58 @@
+{
+  "name": "powerup-win-azure",
+  "version": "1.0.0",
+  "description": "PowerUp & Win campaign app for Azure deployment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm run build:react && npm run build:backend",
+    "build:react": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "dev": "concurrently \"npm run dev:react\" \"npm run dev:backend\"",
+    "dev:react": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "test": "npm run test:video",
+    "test:video": "node test-video-sources.js",
+    "deploy": "az webapp deployment source config-zip --resource-group powerup-rg --name powerup-app --src powerup-deployment.zip"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "azure": {
+    "appService": {
+      "runtime": "NODE|18-lts",
+      "sku": "B1",
+      "region": "eastus"
+    },
+    "storage": {
+      "account": "powerupstorage",
+      "container": "videos",
+      "publicAccess": "blob"
+    },
+    "environment": {
+      "NODE_ENV": "production",
+      "PORT": "8080",
+      "VIDEO_URL": "https://powerupstorage.blob.core.windows.net/videos/V8.mp4"
+    }
+  },
+  "keywords": [
+    "powerup",
+    "win",
+    "campaign",
+    "react",
+    "azure",
+    "video"
+  ],
+  "author": "UMS Northern Division",
+  "license": "MIT"
+}

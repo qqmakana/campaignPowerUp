@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Download, Trophy, Calendar, Shield, Store } from "lucide-react";
+import { config, videoManager } from "./config";
 
 // ---- Assets (placeholder paths - you can replace with actual assets) ----
-// Force rebuild to fix white screen issue
-const VIDEO_MP4 = "/assets/V8.mp4";
+// Use video sources from configuration
+const VIDEO_SOURCES = config.VIDEO_SOURCES;
+const VIDEO_MP4 = videoManager.getCurrentSource(); // Primary video source
 const LOGO_RAW  = "/assets/PowerUpWin-Logo.png";         // PNG logo
 const AGREEMENT_DOC = "/assets/agreement-template.html";
 
@@ -44,7 +46,6 @@ export default function PowerUpWinLanding() {
         {/* Large video background */}
         <div className="absolute inset-0 z-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
           <video
-            src={VIDEO_MP4}
             className="h-full w-full object-cover"
             autoPlay
             muted
@@ -53,20 +54,47 @@ export default function PowerUpWinLanding() {
             preload="metadata"
             title="PowerUp & Win video"
             id="main-video"
+            poster="/assets/PowerUpWin-Logo.png"
             onLoadStart={() => console.log("Video loading started")}
             onCanPlay={() => console.log("Video can play")}
             onError={(e) => {
               console.error("Video error:", e);
-              // Hide video element on error and show fallback
               const video = e.target as HTMLVideoElement;
-              video.style.display = 'none';
-              // Show fallback content
-              const fallback = document.createElement('div');
-              fallback.className = 'absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center';
-              fallback.innerHTML = '<div class="text-center"><h1 class="text-4xl font-bold text-white mb-4">PowerUp & Win</h1><p class="text-xl text-gray-300">UMS Northern Division</p></div>';
-              video.parentNode?.appendChild(fallback);
+              
+              // Try next video source using video manager
+              const nextSrc = videoManager.tryNextSource();
+              
+              if (nextSrc) {
+                console.log(`Trying next video source: ${nextSrc}`);
+                video.src = nextSrc;
+                video.load();
+              } else {
+                // All sources failed, show fallback
+                console.log("All video sources failed, showing fallback");
+                video.style.display = 'none';
+                const fallback = document.createElement('div');
+                fallback.className = 'absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center';
+                fallback.innerHTML = `
+                  <div class="text-center">
+                    <h1 class="text-4xl font-bold text-white mb-4">PowerUp & Win</h1>
+                    <p class="text-xl text-gray-300 mb-6">UMS Northern Division</p>
+                    <div class="animate-pulse">
+                      <div class="w-16 h-16 bg-white/20 rounded-full mx-auto mb-4"></div>
+                      <p class="text-sm text-gray-400">Loading experience...</p>
+                    </div>
+                  </div>
+                `;
+                video.parentNode?.appendChild(fallback);
+              }
             }}
-          />
+          >
+            {/* Your video file as primary source */}
+            <source src="/assets/V8.mp4" type="video/mp4" />
+            {/* Fallback sources only if your video fails */}
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
           {/* Subtle gradient for smooth transition */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
         </div>
@@ -361,10 +389,8 @@ function AgreementForm() {
         submittedAt: new Date().toISOString()
       };
       
-      // Determine API endpoint (development vs production)
-      const API_BASE = process.env.NODE_ENV === 'production' 
-        ? 'https://api.powerupandwin.co.za' 
-        : 'http://localhost:3001';
+      // Use API endpoint from configuration
+      const API_BASE = config.API_BASE;
       
       // Submit to professional API
       const response = await fetch(`${API_BASE}/api/submit`, {

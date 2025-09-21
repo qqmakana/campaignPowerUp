@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Video Test - PowerUp & Win</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .video-test {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #2a2a2a;
+        }
+        video {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #2d5a2d; }
+        .error { background: #5a2d2d; }
+        .warning { background: #5a4a2d; }
+        .info { background: #2d4a5a; }
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #357abd; }
+        .log {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎬 Azure Video Test - PowerUp & Win</h1>
+        <p>This page tests video sources for Azure deployment</p>
+
+        <!-- Video Sources Test -->
+        <div class="video-test">
+            <h3>Video Sources Test</h3>
+            <div id="video-status"></div>
+            <video id="test-video" controls>
+                <source src="/assets/V8.mp4" type="video/mp4">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div>
+                <button onclick="testVideoSources()">Test All Sources</button>
+                <button onclick="clearLog()">Clear Log</button>
+            </div>
+            <div id="log" class="log"></div>
+        </div>
+
+        <!-- Environment Test -->
+        <div class="video-test">
+            <h3>Environment Variables Test</h3>
+            <div id="env-status"></div>
+            <button onclick="testEnvironment()">Check Environment</button>
+        </div>
+
+        <!-- Network Test -->
+        <div class="video-test">
+            <h3>Network Connectivity Test</h3>
+            <div id="network-status"></div>
+            <button onclick="testNetwork()">Test Network</button>
+        </div>
+    </div>
+
+    <script>
+        const videoSources = [
+            "/assets/V8.mp4",
+            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "https://www.w3schools.com/html/mov_bbb.mp4",
+            "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4"
+        ];
+
+        let currentSourceIndex = 0;
+        const log = document.getElementById('log');
+
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #888">[${timestamp}]</span> ${message}`;
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            log.innerHTML = '';
+        }
+
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        async function testVideoSources() {
+            addLog("🎬 Starting video sources test...");
+            updateStatus('video-status', 'Testing video sources...', 'info');
+
+            const video = document.getElementById('test-video');
+            let workingSource = null;
+
+            for (let i = 0; i < videoSources.length; i++) {
+                const source = videoSources[i];
+                addLog(`Testing source ${i + 1}: ${source}`);
+                
+                try {
+                    const response = await fetch(source, { method: 'HEAD' });
+                    if (response.ok) {
+                        addLog(`✅ Source ${i + 1} is accessible (${response.status})`);
+                        workingSource = source;
+                        break;
+                    } else {
+                        addLog(`❌ Source ${i + 1} failed (${response.status})`);
+                    }
+                } catch (error) {
+                    addLog(`❌ Source ${i + 1} error: ${error.message}`);
+                }
+            }
+
+            if (workingSource) {
+                updateStatus('video-status', `✅ Working video source found: ${workingSource}`, 'success');
+                video.src = workingSource;
+                video.load();
+            } else {
+                updateStatus('video-status', '❌ No working video sources found', 'error');
+            }
+        }
+
+        function testEnvironment() {
+            addLog("🔧 Testing environment variables...");
+            
+            const envVars = [
+                'NODE_ENV',
+                'PORT',
+                'VIDEO_URL',
+                'WEBSITE_NODE_DEFAULT_VERSION'
+            ];
+
+            let envStatus = 'Environment Variables:<br>';
+            let hasVideoUrl = false;
+
+            envVars.forEach(varName => {
+                const value = process?.env?.[varName] || 'Not set';
+                envStatus += `${varName}: ${value}<br>`;
+                if (varName === 'VIDEO_URL' && value !== 'Not set') {
+                    hasVideoUrl = true;
+                }
+            });
+
+            if (hasVideoUrl) {
+                updateStatus('env-status', envStatus, 'success');
+                addLog("✅ VIDEO_URL environment variable is set");
+            } else {
+                updateStatus('env-status', envStatus, 'warning');
+                addLog("⚠️ VIDEO_URL environment variable not set - using fallback sources");
+            }
+        }
+
+        async function testNetwork() {
+            addLog("🌐 Testing network connectivity...");
+            updateStatus('network-status', 'Testing network...', 'info');
+
+            const testUrls = [
+                'https://commondatastorage.googleapis.com',
+                'https://www.w3schools.com',
+                'https://sample-videos.com'
+            ];
+
+            let workingUrls = 0;
+
+            for (const url of testUrls) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    if (response.ok) {
+                        addLog(`✅ ${url} is accessible`);
+                        workingUrls++;
+                    } else {
+                        addLog(`❌ ${url} failed (${response.status})`);
+                    }
+                } catch (error) {
+                    addLog(`❌ ${url} error: ${error.message}`);
+                }
+            }
+
+            if (workingUrls > 0) {
+                updateStatus('network-status', `✅ Network connectivity OK (${workingUrls}/${testUrls.length} URLs accessible)`, 'success');
+            } else {
+                updateStatus('network-status', '❌ Network connectivity issues detected', 'error');
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            addLog("🚀 Azure Video Test Page Loaded");
+            testEnvironment();
+            testNetwork();
+        });
+
+        // Video event listeners
+        const video = document.getElementById('test-video');
+        video.addEventListener('loadstart', () => addLog("📹 Video loading started"));
+        video.addEventListener('canplay', () => addLog("✅ Video can play"));
+        video.addEventListener('error', (e) => {
+            addLog(`❌ Video error: ${e.target.error?.message || 'Unknown error'}`);
+            updateStatus('video-status', '❌ Video failed to load', 'error');
+        });
+    </script>
+</body>
+</html>
