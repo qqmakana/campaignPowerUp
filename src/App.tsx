@@ -57,9 +57,14 @@ export default function PowerUpWinLanding() {
             onCanPlay={() => console.log("Video can play")}
             onError={(e) => {
               console.error("Video error:", e);
-              // Hide video element on error
+              // Hide video element on error and show fallback
               const video = e.target as HTMLVideoElement;
               video.style.display = 'none';
+              // Show fallback content
+              const fallback = document.createElement('div');
+              fallback.className = 'absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center';
+              fallback.innerHTML = '<div class="text-center"><h1 class="text-4xl font-bold text-white mb-4">PowerUp & Win</h1><p class="text-xl text-gray-300">UMS Northern Division</p></div>';
+              video.parentNode?.appendChild(fallback);
             }}
           />
           {/* Subtle gradient for smooth transition */}

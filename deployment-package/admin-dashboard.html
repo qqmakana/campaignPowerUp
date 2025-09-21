@@ -105,10 +105,6 @@
                     <i data-lucide="download" class="w-4 h-4 inline mr-2"></i>
                     Export CSV
                 </button>
-                <button onclick="exportToJSON()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    <i data-lucide="file-text" class="w-4 h-4 inline mr-2"></i>
-                    Export JSON
-                </button>
             </div>
         </div>
     </div>
@@ -262,16 +258,6 @@
             downloadFile(csvContent, 'powerup-win-submissions.csv', 'text/csv');
         }
 
-        // Export to JSON
-        function exportToJSON() {
-            if (submissions.length === 0) {
-                alert('No data to export');
-                return;
-            }
-
-            const jsonContent = JSON.stringify(submissions, null, 2);
-            downloadFile(jsonContent, 'powerup-win-submissions.json', 'application/json');
-        }
 
         // Download file helper
         function downloadFile(content, filename, mimeType) {
