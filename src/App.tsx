@@ -4,7 +4,7 @@ import { ArrowRight, Download, Trophy, Calendar, Shield, Store } from "lucide-re
 
 // ---- Assets (placeholder paths - you can replace with actual assets) ----
 // Force rebuild to fix white screen issue
-const VIDEO_MP4 = "https://www.w3schools.com/html/mov_bbb.mp4";
+const VIDEO_MP4 = "/assets/V8.mp4";
 const LOGO_RAW  = "/assets/PowerUpWin-Logo.png";         // PNG logo
 const AGREEMENT_DOC = "/assets/agreement-template.html";
 
@@ -42,7 +42,7 @@ export default function PowerUpWinLanding() {
       {/* HERO: Large video section (more than half screen) */}
       <header className="relative h-[70vh] w-full overflow-hidden">
         {/* Large video background */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
           <video
             src={VIDEO_MP4}
             className="h-full w-full object-cover"
@@ -53,6 +53,14 @@ export default function PowerUpWinLanding() {
             preload="metadata"
             title="PowerUp & Win video"
             id="main-video"
+            onLoadStart={() => console.log("Video loading started")}
+            onCanPlay={() => console.log("Video can play")}
+            onError={(e) => {
+              console.error("Video error:", e);
+              // Hide video element on error
+              const video = e.target as HTMLVideoElement;
+              video.style.display = 'none';
+            }}
           />
           {/* Subtle gradient for smooth transition */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
