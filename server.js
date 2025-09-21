@@ -9,7 +9,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 // Serve static files from the dist directory (React build)
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist'), {
+  maxAge: '1d',
+  etag: false
+}));
 
 // API routes - import the backend routes
 const backendApp = require('./backend/server');
