@@ -22,6 +22,15 @@ if (fs.existsSync(path.join(__dirname, 'dist'))) {
 // Enable CORS
 app.use(cors());
 
+// Health check endpoint for Railway
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    message: 'PowerUp & Win app is running'
+  });
+});
+
 // Serve static files from the dist directory (React build)
 app.use(express.static(path.join(__dirname, 'dist'), {
   maxAge: '1d',
@@ -40,4 +49,16 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 PowerUp & Win app running on port ${PORT}`);
   console.log(`🌐 Visit: http://localhost:${PORT}`);
+  console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+  process.exit(1);
 });
