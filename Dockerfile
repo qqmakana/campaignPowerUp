@@ -4,6 +4,9 @@ FROM nginx:alpine
 # Copy built files to nginx
 COPY dist/ /usr/share/nginx/html/
 
+# Copy video file to assets directory
+COPY public/assets/V8.mp4 /usr/share/nginx/html/assets/V8.mp4
+
 # Copy nginx configuration for proper video handling
 COPY nginx.conf /etc/nginx/nginx.conf
 
