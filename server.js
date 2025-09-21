@@ -7,10 +7,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Debug logging
-console.log('🔍 Debug Info:');
+console.log('🔍 Railway Debug Info:');
 console.log('Current directory:', __dirname);
 console.log('Dist directory exists:', fs.existsSync(path.join(__dirname, 'dist')));
-console.log('Dist contents:', fs.existsSync(path.join(__dirname, 'dist')) ? fs.readdirSync(path.join(__dirname, 'dist')) : 'NOT FOUND');
+if (fs.existsSync(path.join(__dirname, 'dist'))) {
+  console.log('Dist contents:', fs.readdirSync(path.join(__dirname, 'dist')));
+  if (fs.existsSync(path.join(__dirname, 'dist', 'assets'))) {
+    console.log('Assets contents:', fs.readdirSync(path.join(__dirname, 'dist', 'assets')));
+  }
+} else {
+  console.log('❌ DIST DIRECTORY NOT FOUND - BUILD FAILED');
+}
 
 // Enable CORS
 app.use(cors());

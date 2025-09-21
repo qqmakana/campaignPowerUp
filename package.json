@@ -10,7 +10,8 @@
     "start": "node server.js",
     "build:full": "npm run build && npm run build:backend",
     "build:backend": "echo 'Backend already built'",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "railway:build": "node railway-build.js"
   },
   "dependencies": {
     "react": "^18.2.0",
